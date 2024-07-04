@@ -5,27 +5,27 @@ from bs4 import BeautifulSoup as soup
 import itertools
 
 
-# Function to scrape data from imdb.com to respective columns according to genre
+# Função para extrair dados do imdb.com para as respectivas colunas de acordo com o gênero
 def scrape(links, ranking, names, release_year, duration, subgenres, user_rating, directors_and_actors, votes):
-    for x in links:  # Reading all the available links from a specific genre file
+    for x in links:  # Ler todos os links disponíveis de um arquivo de gênero específico
         url = x
         if url == '':
             exit()
         else:
             uClient = uReq(url)
-            page_html = uClient.read()  # Take in url to be parsed
+            page_html = uClient.read()  
             uClient.close()
-            page_soup = soup(page_html, "html.parser")  # Parse the specific url
+            page_soup = soup(page_html, "html.parser")  
             movie_info = page_soup.findAll("div", {
-                "class": "lister-item-content"})  # Find specific tags related to movie ranking and title
+                "class": "lister-item-content"})  # Encontre tags específicas relacionadas à classificação e ao título do filme
             for container in movie_info:
-                ranking.append(container.span.getText())  # Populate ranking of movies
-                names.append(container.a.getText())  # Populate title of movies
+                ranking.append(container.span.getText())  # Estabelecer ranking de filmes
+                names.append(container.a.getText())  # Estabelecer titulo de filmes
 
             release_year_info = page_soup.findAll('span',
-                                                  class_='lister-item-year text-muted unbold')  # Find specific tags related to movie release year
+                                                  class_='lister-item-year text-muted unbold')  # Busca tags de acordo com o ano de lancamento
             for container in release_year_info:
-                release_year.append(container.getText())  # Populate release year of movies
+                release_year.append(container.getText())  # Estabelecer ano de lancamento do filme
 
             """
             movie_certificate = page_soup.findAll('span', class_='certificate') 
@@ -33,19 +33,19 @@ def scrape(links, ranking, names, release_year, duration, subgenres, user_rating
                 action_movie_certificate.append(container.getText())
             """
             movie_duration = page_soup.findAll('span',
-                                               class_='runtime')  # Find specific tags related to movie duration in minutes
+                                               class_='runtime')  
             for container in movie_duration:
-                duration.append(container.getText())  # Populate release year of movies
+                duration.append(container.getText())  
 
             movie_subgenre = page_soup.findAll('span',
-                                               class_='genre')  # Find specific tags related to movie sub genres in minutes
+                                               class_='genre')  
             for container in movie_subgenre:
-                subgenres.append(container.getText())  # Populate subgenres of movies
+                subgenres.append(container.getText())  
 
             movie_rating = page_soup.findAll('div',
-                                             class_='inline-block ratings-imdb-rating')  # Find specific tags related to movie's user rating
+                                             class_='inline-block ratings-imdb-rating') 
             for container in movie_rating:
-                user_rating.append(container['data-value'])  # Populate user rating of movies
+                user_rating.append(container['data-value']) 
 
             """
             movie_metascore = page_soup.findAll('span', class_='metascore favorable')
@@ -58,77 +58,65 @@ def scrape(links, ranking, names, release_year, duration, subgenres, user_rating
             """
 
             movie_directors_and_actors = page_soup.findAll('p',
-                                                           class_="")  # Find specific tags related to movie's director and cast
+                                                           class_="") 
             for container in movie_directors_and_actors:
-                directors_and_actors.append(container.getText())  # Populate director and cast of movies
+                directors_and_actors.append(container.getText())  
 
             movie_votes = page_soup.find_all('span', attrs={
-                'name': 'nv'})  # Find specific tags related to movie's user votes and box office collection
+                'name': 'nv'})
             for i in range(0, len(movie_votes)):
                 vote = movie_votes[i].getText()
                 if vote != '':
-                    votes.append(vote)  # Populate votes and box office collection of movies
+                    votes.append(vote)  
                 else:
                     votes.append('Not available')
 
                 for i in range(0, len(votes)):
                     if votes[i].startswith('$'):
-                        votes.pop(i)  # Remove box office collection of movies
+                        votes.pop(i)  
 
 def links_reading_and_dataframe_setup():
-    # Reading action genre movie links file
+
     action_url = open("Links\\Action.txt", "r")
     action_links = action_url.readlines()
 
-    # Reading animation genre movie links file
     animation_url = open("Links\\Animation(503).txt", "r")
     animation_links = animation_url.readlines()
 
-    # Reading biography genre movie links file
     biography_url = open("Links\\Biography(775).txt", "r")
     biography_links = biography_url.readlines()
 
-    # Reading comedy genre movie links file
     comedy_url = open("Links\\Comedy.txt", "r")
     comedy_links = comedy_url.readlines()
 
-    # Reading crime genre movie links file
     crime_url = open("Links\\Crime.txt", "r")
     crime_links = crime_url.readlines()
 
-    # Reading drama genre movie links file
     drama_url = open("Links\\Drama.txt", "r")
     drama_links = drama_url.readlines()
 
-    # Reading fantasy genre movie links file
     fantasy_url = open("Links\\Fantasy.txt", "r")
     fantasy_links = fantasy_url.readlines()
 
-    # Reading horror genre movie links file
     horror_url = open("Links\\Horror.txt", "r")
     horror_links = horror_url.readlines()
 
-    # Reading mystery genre movie links file
     mystery_url = open("Links\\Mystery.txt", "r")
     mystery_links = mystery_url.readlines()
 
-    # Reading romance genre movie links file
     romance_url = open("Links\\Romance.txt", "r")
     romance_links = romance_url.readlines()
 
-    # Reading sci-fi genre movie links file
     scifi_url = open("Links\\Sci-fi.txt", "r")
     scifi_links = scifi_url.readlines()
 
-    # Reading thriller genre movie links file
     thriller_url = open("Links\\Thriller.txt", "r")
     thriller_links = thriller_url.readlines()
 
-    # Reading war genre movie links file
     war_url = open("Links\\War (640+).txt", "r")
     war_links = war_url.readlines()
 
-    # Action genre column headings
+    # Action
     url = ''
     action_movie_ranking = list()
     action_movie_names = list()
@@ -142,7 +130,7 @@ def links_reading_and_dataframe_setup():
     action_movie_directors_and_actors = list()
     action_movie_votes = list()
 
-    # Animation genre column headings
+    # Animation
     animation_movie_ranking = list()
     animation_movie_names = list()
     animation_movie_release_year = list()
@@ -155,7 +143,7 @@ def links_reading_and_dataframe_setup():
     animation_movie_directors_and_actors = list()
     animation_movie_votes = list()
 
-    # Biography genre column headings
+    # Biography
     biography_movie_ranking = list()
     biography_movie_names = list()
     biography_movie_release_year = list()
@@ -168,7 +156,7 @@ def links_reading_and_dataframe_setup():
     biography_movie_directors_and_actors = list()
     biography_movie_votes = list()
 
-    # Comedy genre column headings
+    # Comedy
     comedy_movie_ranking = list()
     comedy_movie_names = list()
     comedy_movie_release_year = list()
@@ -181,7 +169,7 @@ def links_reading_and_dataframe_setup():
     comedy_movie_directors_and_actors = list()
     comedy_movie_votes = list()
 
-    # Crime genre column headings
+    # Crime
     crime_movie_ranking = list()
     crime_movie_names = list()
     crime_movie_release_year = list()
@@ -194,7 +182,7 @@ def links_reading_and_dataframe_setup():
     crime_movie_directors_and_actors = list()
     crime_movie_votes = list()
 
-    # Drama genre column headings
+    # Drama
     drama_movie_ranking = list()
     drama_movie_names = list()
     drama_movie_release_year = list()
@@ -207,7 +195,7 @@ def links_reading_and_dataframe_setup():
     drama_movie_directors_and_actors = list()
     drama_movie_votes = list()
 
-    # Fantasy genre column headings
+    # Fantasy
     fantasy_movie_ranking = list()
     fantasy_movie_names = list()
     fantasy_movie_release_year = list()
@@ -220,7 +208,7 @@ def links_reading_and_dataframe_setup():
     fantasy_movie_directors_and_actors = list()
     fantasy_movie_votes = list()
 
-    # Horror genre column headings
+    # Horror
     horror_movie_ranking = list()
     horror_movie_names = list()
     horror_movie_release_year = list()
@@ -233,7 +221,7 @@ def links_reading_and_dataframe_setup():
     horror_movie_directors_and_actors = list()
     horror_movie_votes = list()
 
-    # Mystery genre column headings
+    # Mystery
     mystery_movie_ranking = list()
     mystery_movie_names = list()
     mystery_movie_release_year = list()
@@ -246,7 +234,7 @@ def links_reading_and_dataframe_setup():
     mystery_movie_directors_and_actors = list()
     mystery_movie_votes = list()
 
-    # Romance genre column headings
+    # Romance
     romance_movie_ranking = list()
     romance_movie_names = list()
     romance_movie_release_year = list()
@@ -259,7 +247,7 @@ def links_reading_and_dataframe_setup():
     romance_movie_directors_and_actors = list()
     romance_movie_votes = list()
 
-    # Sci-fi genre column headings
+    # Sci-fi
     scifi_movie_ranking = list()
     scifi_movie_names = list()
     scifi_movie_release_year = list()
@@ -272,7 +260,7 @@ def links_reading_and_dataframe_setup():
     scifi_movie_directors_and_actors = list()
     scifi_movie_votes = list()
 
-    # Thriller genre column headings
+    # Thriller
     thriller_movie_ranking = list()
     thriller_movie_names = list()
     thriller_movie_release_year = list()
@@ -299,7 +287,7 @@ def links_reading_and_dataframe_setup():
     war_movie_votes = list()
 
 
-    # Call the scrape function to provide links of different genres which contains urls and populate the respective data fields
+    # Chama funcao scrape
     scrape(action_links, action_movie_ranking, action_movie_names, action_movie_release_year, action_movie_duration,
            action_movie_subgenres, action_movie_user_rating, action_movie_directors_and_actors, action_movie_votes)
     scrape(animation_links, animation_movie_ranking, animation_movie_names, animation_movie_release_year,
@@ -330,7 +318,7 @@ def links_reading_and_dataframe_setup():
     scrape(war_links, war_movie_ranking, war_movie_names, war_movie_release_year, war_movie_duration, war_movie_subgenres,
            war_movie_user_rating, war_movie_directors_and_actors, war_movie_votes)
 
-    # Add a column to all respective subgenres(To be made) data frames with their Primary genre as required
+    # Adicionar uma coluna a todos os respectivos quadros de dados de subgêneros e genero principal
     action_movie_genre = list(itertools.repeat("Action", len(action_movie_ranking)))
     animation_movie_genre = list(itertools.repeat("Animation", len(animation_movie_ranking)))
     biography_movie_genre = list(itertools.repeat("Biography", len(biography_movie_ranking)))
@@ -345,7 +333,7 @@ def links_reading_and_dataframe_setup():
     thriller_movie_genre = list(itertools.repeat("Thriller", len(thriller_movie_ranking)))
     war_movie_genre = list(itertools.repeat("War", len(war_movie_ranking)))
 
-    # Create data frames for each genres
+    # Criar dataframe para cada genero de filme
     action_df = pd.DataFrame(list(
         zip(action_movie_ranking, action_movie_names, action_movie_release_year, action_movie_duration, action_movie_genre,
             action_movie_subgenres, action_movie_user_rating, action_movie_directors_and_actors, action_movie_votes)),
@@ -414,10 +402,9 @@ def links_reading_and_dataframe_setup():
                           columns=['Ranking', 'Title', 'Release Year', 'Duration(Min.)', 'Genre', 'Sub Genres',
                                    'User Rating', 'Directors & Actors', 'Votes'])
 
-    # Merge all the data frames
+    # Mesclar dataframes
     complete = [action_df, animation_df, biography_df, comedy_df, crime_df, drama_df, fantasy_df, horror_df, mystery_df,
                 romance_df, scifi_df, thriller_df, war_df]
     final = pd.concat(complete)
-    # Save the finished file as csv in the local directory for further processing
-    final.to_csv('Data_Files\\Pre-cleaned-file.csv')
-
+    # Salve o arquivo finalizado como csv no diretório local para processamento posterior
+    final.to_csv('Data_Files/desafio_indicium_limpo.csv')

@@ -19,7 +19,7 @@ def regression():
     np.random.seed(0)
 
     #Read python-cleaned-data-file
-    imdb_data=pd.read_csv('Data_Files\\Python-cleaned-file.csv',index_col=0)
+    imdb_data=pd.read_csv('Data_Files/dados_desafio_limpo.csv',index_col=0)
 
     #Remove movies with less than 5000 votes
     relevant_imdb_data=imdb_data[(imdb_data['Votes']>5000)]
@@ -217,5 +217,3 @@ def regression():
 
     pd.set_option('display.max_columns', None)
     print(metrics_df)
-
-
